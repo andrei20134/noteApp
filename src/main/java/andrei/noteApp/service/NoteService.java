@@ -21,8 +21,12 @@ public class NoteService {
         return noteRepository.findAll();
     }
 
-    public long countNotes() {
-        return noteRepository.count();
+    public List<Note> findNotesByUserId(Long id) {
+        return noteRepository.findByUserId(id);
+    }
+
+    public long countNotes(long id) {
+        return noteRepository.countByUserId(id);
     }
 
     public void deleteNote(Note note) {

@@ -8,14 +8,12 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "notes")
+// Модель заметки
 public class Note {
     @Id
     @GeneratedValue
     private Long id;
     private String name;
     private String description;
-
-    /*@ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;*/
+    private Long userId;
 }

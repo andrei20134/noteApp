@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class CustomRequestCache extends HttpSessionRequestCache {
 
+    // Сохраняет запросы пользователя до аутентификации и после сразу перенаправляет на него
     @Override
     public void saveRequest(HttpServletRequest request, HttpServletResponse response) {
         if (!SecurityUtils.isFrameworkInternalRequest(request)) {

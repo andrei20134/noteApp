@@ -4,6 +4,7 @@ import andrei.noteApp.model.Note;
 import andrei.noteApp.model.User;
 import andrei.noteApp.security.SecurityService;
 import andrei.noteApp.service.NoteService;
+import andrei.noteApp.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
@@ -18,6 +19,7 @@ import com.vaadin.flow.server.VaadinSession;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.security.PermitAll;
@@ -45,14 +47,18 @@ public class NoteView extends HorizontalLayout {
 @PageTitle("Notes | Сервис заметок")
 @PermitAll
 public class NoteView extends VerticalLayout {
-    Grid<Note> grid = new Grid<>(Note.class);
+    Grid<Note> grid = new Grid<>(Note.class,false);
     NoteForm form;
     NoteService service;
     SecurityService securityService;
+    UserService userService;
 
-    public NoteView(NoteService service, SecurityService securityService) {
+    long userId = 0;
+
+    public NoteView(NoteService service, SecurityService securityService, UserService userService) {
         this.service = service;
         this.securityService = securityService;
+        this.userService = userService;
         addClassName("note-view");
         setSizeFull();
         configureGrid();
@@ -70,27 +76,36 @@ public class NoteView extends VerticalLayout {
         content.addClassNames("content", "gap-m");
         content.setSizeFull();
 
+
+        //Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //String currentPrincipalName = authentication.getName();
+
+        UserDetails authenticatedUser =  securityService.getAuthenticatedUser();
+
+        if(authenticatedUser != null) {
+            User user = userService.findByLogin(authenticatedUser.getUsername());
+            userId = user.getUserId();
+        }
+
+
         add(getToolbar(), content);
         updateList();
         closeEditor();
         grid.asSingleSelect().addValueChangeListener(event ->
                 editNote(event.getValue()));
 
-        var test = VaadinSession.getCurrent();
-        /*Notification.show("This UI is "
-                + test.);*/
-       // User user = VaadinSession.getCurrent().getAttribute( User.class );
-        User currentUser = (User) VaadinSession.getCurrent().getAttribute("user");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-
-       var test0=  securityService.getAuthenticatedUser();
     }
 
     private void configureGrid() {
         grid.addClassNames("contact-grid");
         grid.setSizeFull();
-        grid.setColumns("name", "description");
+        //grid.setColumns("name", "description");
+
+        grid.addColumn(Note::getName).setHeader("Название заметки");
+        grid.addColumn(Note::getDescription).setHeader("Описание");
+
+        //var a = grid.getColumns();
+
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
@@ -104,6 +119,10 @@ public class NoteView extends VerticalLayout {
     }
 
     private void saveNote(NoteForm.SaveEvent event) {
+
+        var test = event.getNote();
+        test.setUserId(userId);
+
         service.saveNote(event.getNote());
         updateList();
         closeEditor();
@@ -137,7 +156,10 @@ public class NoteView extends VerticalLayout {
     }
 
     private void updateList() {
-        grid.setItems(service.findAllNotes());
+        grid.setItems(service.findNotesByUserId(userId));
     }
+//    private void updateList() {
+//        grid.setItems(service.findAllNotes());
+//    }
 
 }
