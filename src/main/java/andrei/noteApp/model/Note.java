@@ -2,11 +2,16 @@ package andrei.noteApp.model;
 
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
-@Data
+
 @Entity
+@Getter
+@Setter
 @Table(name = "notes")
 // Модель заметки
 public class Note {

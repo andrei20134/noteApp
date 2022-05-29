@@ -84,7 +84,7 @@ public class NoteView extends VerticalLayout {
 
         if(authenticatedUser != null) {
             User user = userService.findByLogin(authenticatedUser.getUsername());
-            userId = user.getUserId();
+            userId = user.getId();
         }
 
 

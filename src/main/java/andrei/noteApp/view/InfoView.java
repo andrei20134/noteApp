@@ -37,7 +37,7 @@ public class InfoView extends HorizontalLayout {
 
         if(authenticatedUser != null) {
             User user = userService.findByLogin(authenticatedUser.getUsername());
-            userId = user.getUserId();
+            userId = user.getId();
         }
 
         TextArea textArea = new TextArea();
