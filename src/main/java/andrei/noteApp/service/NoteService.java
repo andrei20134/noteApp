@@ -14,19 +14,18 @@ public class NoteService {
 
     public NoteService(NoteRepository noteRepository) {
         this.noteRepository = noteRepository;
-
     }
 
     public List<Note> findAllNotes() {
         return noteRepository.findAll();
     }
 
-    public List<Note> findNotesByUserId(Long id) {
-        return noteRepository.findByUserId(id);
+    public List<Note> findNotesByUserId(Long userId) {
+        return noteRepository.findByUserId(userId);
     }
 
-    public long countNotes(long id) {
-        return noteRepository.countByUserId(id);
+    public long countNotes(long userId) {
+        return noteRepository.countByUserId(userId);
     }
 
     public void deleteNote(Note note) {

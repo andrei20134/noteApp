@@ -8,10 +8,12 @@ import java.util.List;
 
 
 public interface NoteRepository extends JpaRepository<Note, Long> {
-    @Query("from Note e")
+    @Query("select e from Note e where e.name =:name")
     List<Note> findByName(String name);
 
-    List<Note> findByUserId(Long id);
+    @Query("select e from Note e where e.userId =:userId")
+    List<Note> findByUserId(Long userId);
 
-    long countByUserId(long id);
+    @Query("select count(e) from Note e where e.userId =:userId")
+    long countByUserId(long userId);
 }
