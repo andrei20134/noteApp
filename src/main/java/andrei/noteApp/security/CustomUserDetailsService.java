@@ -1,6 +1,5 @@
 package andrei.noteApp.security;
 
-import andrei.noteApp.model.Role;
 import andrei.noteApp.model.User;
 import andrei.noteApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -30,18 +28,11 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("Unknown user: " + userName);
         }
 
-        String role = "User";
-
-        if (myUser.getRole() == Role.ADMIN)
-        {
-            role = "Admin";
-        }
-
 
         UserDetails user = org.springframework.security.core.userdetails.User.builder()
                 .username(myUser.getLogin())
                 .password(myUser.getPassword())
-                .roles(role)
+                .roles(myUser.getRoles().toString())
                 .build();
         return user;
     }

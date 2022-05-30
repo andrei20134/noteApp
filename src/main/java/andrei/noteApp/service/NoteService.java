@@ -2,7 +2,6 @@ package andrei.noteApp.service;
 
 import andrei.noteApp.model.Note;
 import andrei.noteApp.repository.NoteRepository;
-import andrei.noteApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

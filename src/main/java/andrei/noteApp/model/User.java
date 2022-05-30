@@ -1,14 +1,10 @@
 package andrei.noteApp.model;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -23,14 +19,19 @@ public class User {
     private Long id;
     private String login;
     private String password;
-    private Role role;
+
+
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Role> roles;
 
     public User() {
     }
 
-    public User(String username, String password, Role role) {
+    public User(String username, String password, Set<Role> roles) {
         this.login = username;
-        this.role = role;
+        this.roles = roles;
         this.password = password;
     }
 }

@@ -17,6 +17,9 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.Route;
 import org.springframework.security.access.annotation.Secured;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Route("register")
 public class RegisterView extends Composite  {
 
@@ -55,7 +58,13 @@ public class RegisterView extends Composite  {
         } else if (!password1.equals(password2)) {
             Notification.show("Пароли не совпадают");
         } else {
-            userService.save(new User(username, password1, Role.USER));
+
+            // Роли по умолчанию для нового пользователя
+            HashSet<Role> rolesSet = new HashSet<>();
+            rolesSet.add(Role.USER);
+            rolesSet.add(Role.CLIENT);
+
+            userService.save(new User(username, password1, rolesSet));
             Notification.show("Регистрация завершена");
 
         }

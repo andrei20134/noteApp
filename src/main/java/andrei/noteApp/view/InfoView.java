@@ -1,7 +1,6 @@
 package andrei.noteApp.view;
 
 import andrei.noteApp.model.User;
-import andrei.noteApp.repository.NoteRepository;
 import andrei.noteApp.security.SecurityService;
 import andrei.noteApp.service.NoteService;
 import andrei.noteApp.service.UserService;
@@ -27,7 +26,7 @@ public class InfoView extends HorizontalLayout {
 
     private  SecurityService securityService;
 
-    long userId = 0;
+    private User user= null;
 
     public InfoView(NoteService noteService, UserService userService, SecurityService securityService) {
         this.noteService = noteService;
@@ -36,14 +35,13 @@ public class InfoView extends HorizontalLayout {
         UserDetails authenticatedUser =  securityService.getAuthenticatedUser();
 
         if(authenticatedUser != null) {
-            User user = userService.findByLogin(authenticatedUser.getUsername());
-            userId = user.getId();
+            user = userService.findByLogin(authenticatedUser.getUsername());
         }
 
         TextArea textArea = new TextArea();
         textArea.setWidthFull();
         textArea.setLabel("Описание");
-        textArea.setValue("Количество заметок пользователя " + authenticatedUser.getUsername() + ": " + noteService.countNotes(userId));
+        textArea.setValue("Количество заметок пользователя " + authenticatedUser.getUsername() + ": " + noteService.countNotes(user.getId()));
         add(textArea);
 
 

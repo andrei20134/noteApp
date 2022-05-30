@@ -7,39 +7,18 @@ import andrei.noteApp.service.NoteService;
 import andrei.noteApp.service.UserService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.FlexLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.server.VaadinSession;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.security.PermitAll;
 
-/*
-//@Route(value = "note")
-@PageTitle("Note")
-@Route(value = "note", layout = MainLayout.class)
-public class NoteView extends HorizontalLayout {
-    private NoteRepository noteRepo;
-    private Grid<Note> grid = new Grid<>(Note.class);
 
-    @Autowired
-    public NoteView(NoteRepository noteRepo) {
-        this.noteRepo = noteRepo;
-        add(grid);
-        grid.setItems(noteRepo.findAll());
-    }
-}
-*/
 
 @Component
 @Scope("prototype")
@@ -49,14 +28,14 @@ public class NoteView extends HorizontalLayout {
 public class NoteView extends VerticalLayout {
     Grid<Note> grid = new Grid<>(Note.class,false);
     NoteForm form;
-    NoteService service;
-    SecurityService securityService;
-    UserService userService;
+    private NoteService noteService;
+    private SecurityService securityService;
+    private UserService userService;
 
-    long userId = 0;
+    private User user = null;
 
     public NoteView(NoteService service, SecurityService securityService, UserService userService) {
-        this.service = service;
+        this.noteService = service;
         this.securityService = securityService;
         this.userService = userService;
         addClassName("note-view");
@@ -83,8 +62,7 @@ public class NoteView extends VerticalLayout {
         UserDetails authenticatedUser =  securityService.getAuthenticatedUser();
 
         if(authenticatedUser != null) {
-            User user = userService.findByLogin(authenticatedUser.getUsername());
-            userId = user.getId();
+            user = userService.findByLogin(authenticatedUser.getUsername());
         }
 
 
@@ -120,16 +98,16 @@ public class NoteView extends VerticalLayout {
 
     private void saveNote(NoteForm.SaveEvent event) {
 
-        var test = event.getNote();
-        test.setUserId(userId);
+        Note noteToSave = event.getNote();
+        noteToSave.setUser(user);
 
-        service.saveNote(event.getNote());
+        noteService.saveNote(noteToSave);
         updateList();
         closeEditor();
     }
 
     private void deleteNote(NoteForm.DeleteEvent event) {
-        service.deleteNote(event.getNote());
+        noteService.deleteNote(event.getNote());
         updateList();
         closeEditor();
     }
@@ -156,10 +134,6 @@ public class NoteView extends VerticalLayout {
     }
 
     private void updateList() {
-        grid.setItems(service.findNotesByUserId(userId));
+        grid.setItems(noteService.findNotesByUserId(user.getId()));
     }
-//    private void updateList() {
-//        grid.setItems(service.findAllNotes());
-//    }
-
 }

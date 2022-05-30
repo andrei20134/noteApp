@@ -1,5 +1,6 @@
 package andrei.noteApp.model;
 
+// Роли пользователя
 public enum Role {
-    USER, ADMIN
+    USER, CLIENT, ADMIN, DEALER
 }

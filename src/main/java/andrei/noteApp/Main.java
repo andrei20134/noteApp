@@ -14,6 +14,8 @@ import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConf
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.HashSet;
+
 //@SpringBootApplication()
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
 @NpmPackage(value = "lumo-css-framework", version = "^4.0.10")
@@ -37,8 +39,19 @@ public class Main {
 
 
 			// Начальная инициализация
-			//userService.save(new User("andrei0", "1234", Role.ADMIN));
-			//userService.save(new User("andrei", "123", Role.USER));
+
+//			// Роли нового пользователя admin
+//			HashSet<Role> adminRolesSet = new HashSet<>();
+//			adminRolesSet.add(Role.ADMIN);
+//			adminRolesSet.add(Role.DEALER);
+//
+//			// Роли нового пользователя user
+//			HashSet<Role> userRolesSet = new HashSet<>();
+//			userRolesSet.add(Role.USER);
+//			userRolesSet.add(Role.CLIENT);
+//
+//			userService.save(new User("andrei0", "1234", adminRolesSet));
+//			userService.save(new User("andrei", "123", userRolesSet));
 
 
 		};
